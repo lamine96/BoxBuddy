@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>BoxBuddy - إدارة الاشتراكات</title>
+    <style>
+        body { font-family: Tahoma, sans-serif; padding: 20px; background-color: #f4f4f9; color: #333; }
+        .container { max-width: 900px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        h1 { color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        form { background: #e9ecef; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"] { width: 90%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        input[type="submit"] { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: right; }
+        th { background-color: #007bff; color: white; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>نظام BoxBuddy لتذكير الدفع</h1>
+
+        <form method="POST" action="{{ url_for('add_member') }}">
+            <h2>إضافة مشترك جديد</h2>
+            <label for="name">الاسم:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="phone">رقم الهاتف (مع 213):</label>
+            <input type="text" id="phone" name="phone" required>
+
+            <label for="last_payment_date">تاريخ آخر دفعة (YYYY-MM-DD):</label>
+            <input type="text" id="last_payment_date" name="last_payment_date" placeholder="مثال: 2025-10-01" required>
+            
+            <input type="submit" value="إضافة المشترك">
+        </form>
+
+        <h2>المشتركين الحاليين</h2>
+        <table>
+            <tr>
+                <th>الاسم</th>
+                <th>رقم الهاتف</th>
+                <th>تاريخ آخر دفعة</th>
+            <th>الإجراءات</th> </tr>
+            {% for member in members %}
+            <tr>
+                <td>{{ member[1] }}</td> <td>{{ member[2] }}</td> <td>{{ member[3] }}</td> <td>
+                    <form method="POST" action="{{ url_for('delete_member', member_id=member[0]) }}" style="display:inline;">
+                        <input type="submit" value="حذف" style="background-color: #dc3545;">
+                    </form>
+                    <a href="{{ url_for('edit_member_form', member_id=member[0]) }}">
+                        <input type="button" value="تعديل" style="background-color: #ffc107;">
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
