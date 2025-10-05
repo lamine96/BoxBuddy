@@ -40,7 +40,7 @@ def index():
 def add_member():
     """إضافة مشترك جديد إلى قاعدة البيانات."""
     name = request.form['name']
-    phone = request.form['phone']
+    phone = request.form['phone'].strip() 
     date_str = request.form['last_payment_date']
     
     if not all([name, phone, date_str]):
