@@ -1,4 +1,5 @@
 Flask
 gunicorn
 python-dateutil
-pywhatkit
+psycopg2-binary
+Flask-SQLAlchemy
