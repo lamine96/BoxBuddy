@@ -42,6 +42,21 @@ def index():
 
 @app.route('/add_member', methods=['POST'])
 def add_member():
+    name = request.form['name']
+    phone = request.form['phone'].strip() 
+    date_str = request.form['last_payment_date']
+    
+    if not all([name, phone, date_str]):
+        return "يجب ملء جميع الحقول (الاسم، الهاتف، تاريخ الدفع).", 400
+
+    try:
+        parsed_date = parser.parse(date_str)
+        formatted_date_str = parsed_date.strftime('%Y-%m-%d')
+    except:
+        return "صيغة التاريخ غير صحيحة. حاول: 2025-09-05 أو 05/09/2025", 400
+
+    new_member = Member(name=name, phone=phone, last_payment_date=formatted_date_str)
+    
     try:
         db.session.add(new_member)
         db.session.commit()
@@ -53,7 +68,36 @@ def add_member():
 
 @app.route('/delete_member/<int:member_id>', methods=['POST'])
 def delete_member(member_id):
+    member_to_delete = Member.query.get_or_404(member_id)
     db.session.delete(member_to_delete)
     db.session.commit()
+    return redirect(url_for('index'))
+
+@app.route('/edit_member/<int:member_id>')
+def edit_member_form(member_id):
+    member = Member.query.get_or_404(member_id)
+    member_data = [member.id, member.name, member.phone, member.last_payment_date]
+    return render_template('edit_member.html', member=member_data)
+
+@app.route('/update_member/<int:member_id>', methods=['POST'])
+def update_member(member_id):
+    member = Member.query.get_or_404(member_id)
+    
+    name = request.form['name']
+    phone = request.form['phone']
+    date_str = request.form['last_payment_date']
+    
+    try:
+        parsed_date = parser.parse(date_str)
+        formatted_date_str = parsed_date.strftime('%Y-%m-%d')
+    except:
+        return "صيغة التاريخ غير صحيحة. حاول: 2025-09-05 أو 05/09/2025", 400
+
+    member.name = name
+    member.phone = phone
+    member.last_payment_date = formatted_date_str
+    
+    db.session.commit()
+    
     return redirect(url_for('index'))
 server = app
