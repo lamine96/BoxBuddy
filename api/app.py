@@ -18,7 +18,7 @@ db = SQLAlchemy(app)
 
 class Member(db.Model):
     __tablename__ = 'members' 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
     last_payment_date = db.Column(db.String(10), nullable=False) 
