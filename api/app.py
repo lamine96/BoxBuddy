@@ -27,6 +27,7 @@ class Member(db.Model):
 def setup_database():
     """يضمن وجود الجداول قبل معالجة أي طلب."""
     with app.app_context():
+        db.drop_all() 
         db.create_all()
 
 @app.route('/')
